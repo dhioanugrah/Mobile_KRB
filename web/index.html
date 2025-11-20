@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base href="/" />
+    <meta charset="UTF-8" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <meta name="description" content="Rimba App Flutter Web" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Rimba App</title>
+    <link rel="manifest" href="manifest.json" />
+  </head>
+  <body>
+    <script src="flutter.js" defer></script>
+
+    <!-- Tambahan untuk Drift Web -->
+    <script>
+      // kasih tahu drift di mana file wasm & worker
+      window.sqlite3WasmUri = "sqlite3.wasm";
+      window.driftWorkerUri = "drift_worker.js";
+    </script>
+  </body>
+</html>
