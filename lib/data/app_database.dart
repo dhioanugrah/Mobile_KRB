@@ -38,7 +38,14 @@ class Moments extends Table {
   DateTimeColumn get updatedAt => dateTime().nullable()();
 }
 
-@DriftDatabase(tables: [Users, Categories, FloraTable, Moments])
+class FoundFlora extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get floraId => integer().references(FloraTable, #id)();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+}
+// --- Database ---
+
+@DriftDatabase(tables: [Users, Categories, FloraTable, Moments, FoundFlora])
 class AppDatabase extends _$AppDatabase {
   AppDatabase._(super.e);
 
@@ -101,10 +108,40 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<FloraTableData>> watchFloraByCategory(int categoryId) =>
     (select(floraTable)..where((t) => t.categoryId.equals(categoryId))).watch();
 
+// === Found Flora ===
+Future<int> addFoundFlora(int floraId) async {
+  final entry = FoundFloraCompanion(
+    floraId: Value(floraId),
+  );
+  return into(foundFlora).insert(entry);
+}
+
+Future<int> removeFoundFlora(int floraId) =>
+  (delete(foundFlora)..where((t) => t.floraId.equals(floraId))).go();
+
+Future<List<FoundFloraData>> getAllFoundFlora() =>
+  select(foundFlora).get();
+
+Stream<List<FloraTableData>> watchFoundFlora() {
+  final query = select(floraTable).join([
+    innerJoin(this.foundFlora, this.foundFlora.floraId.equalsExp(floraTable.id)),
+  ]);
+
+  return query.watch().map((rows) => rows.map((r) => r.readTable(floraTable)).toList());
+}
+
+Future<bool> isFloraFound(int floraId) async {
+  final result = await (select(this.foundFlora)..where((t) => t.floraId.equals(floraId)))
+      .getSingleOrNull();
+  return result != null;
+}
 
   // === Moments ===
   Future<int> insertMoment(MomentsCompanion m) => into(moments).insert(m);
   Future<List<Moment>> getAllMoments() => select(moments).get();
+  Future<Moment?> getMomentById(int id) =>
+    (select(moments)..where((t) => t.id.equals(id))).getSingleOrNull();
+
   Future<bool> updateMomentData(MomentsCompanion m) => update(moments).replace(m);
   Future<int> deleteMomentById(int id) =>
       (delete(moments)..where((t) => t.id.equals(id))).go();

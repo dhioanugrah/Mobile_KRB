@@ -13,6 +13,17 @@ import 'package:rimba_app/ui/views/flora_management_view.dart';
 import 'package:rimba_app/ui/viewmodels/flora_viewmodel.dart';
 import 'package:rimba_app/ui/viewmodels/users_viewmodel.dart';
 import 'package:rimba_app/data/app_database.dart';
+import 'package:rimba_app/ui/views/categories_overview_view.dart';
+import 'package:rimba_app/ui/views/category_flora_list_view.dart';
+import 'package:rimba_app/ui/views/flora_detail_view.dart';
+import 'package:rimba_app/ui/views/moments_list_view.dart';
+import 'package:rimba_app/ui/views/moment_add_view.dart';
+import 'package:rimba_app/ui/views/moment_detail_view.dart';
+import 'package:rimba_app/ui/views/found_detail_view.dart';
+import 'package:rimba_app/ui/views/found_list_view.dart';
+
+
+
 
 class AppRouter {
   final AuthService authService;
@@ -40,6 +51,68 @@ class AppRouter {
         path: '/home',
         builder: (context, state) => const HomeView(),
       ),
+    // ==== MOMENTS (LIBRARY) ====
+    GoRoute(
+      path: '/moments',
+      builder: (context, state) => const MomentsListView(),
+    ),
+    GoRoute(
+      path: '/moments/add',
+      builder: (context, state) => const MomentAddView(),
+    ),
+    GoRoute(
+      path: '/moments/:id',
+      builder: (context, state) {
+        final id = int.parse(state.pathParameters['id']!);
+        final moment =
+            state.extra is Moment ? state.extra as Moment : null;
+        return MomentDetailView(
+          momentId: id,
+          initialMoment: moment,
+        );
+      },
+    ),
+GoRoute(
+  path: '/found',
+  builder: (context, state) => const FoundListView(),
+),
+GoRoute(
+  path: '/found/:id',
+  builder: (context, state) {
+    final flora = state.extra as FloraTableData;
+    return FoundDetailView(flora: flora);
+  },
+),
+
+
+            GoRoute(
+        path: '/categories',
+        builder: (context, state) => const CategoriesOverviewView(),
+      ),
+      GoRoute(
+        path: '/categories/:id',
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          final category = state.extra is Category ? state.extra as Category : null;
+          return CategoryFloraListView(
+            categoryId: id,
+            category: category,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/flora/:id',
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          final flora =
+              state.extra is FloraTableData ? state.extra as FloraTableData : null;
+          return FloraDetailView(
+            floraId: id,
+            initialFlora: flora,
+          );
+        },
+      ),
+
       GoRoute(
         path: '/admin',
         builder: (context, state) => const AdminDashboardView(),
