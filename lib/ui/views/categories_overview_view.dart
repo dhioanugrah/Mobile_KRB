@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:rimba_app/data/app_database.dart';
 import 'package:rimba_app/ui/widgets/app_bottom_navbar.dart';
 
-
 class CategoriesOverviewView extends StatelessWidget {
   const CategoriesOverviewView({super.key});
 
@@ -20,8 +19,14 @@ class CategoriesOverviewView extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.menu_rounded),
-          onPressed: () {},
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/home');
+            }
+          },
         ),
         centerTitle: true,
         title: const Text(
@@ -82,7 +87,8 @@ class CategoriesOverviewView extends StatelessWidget {
 
                   return GridView.builder(
                     padding: const EdgeInsets.only(bottom: 16),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
@@ -141,7 +147,6 @@ class CategoriesOverviewView extends StatelessWidget {
       bottomNavigationBar: AppBottomNavBar(
         currentTab: AppTab.values.first,
       ),
-   
     );
   }
 

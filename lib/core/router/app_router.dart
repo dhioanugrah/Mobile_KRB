@@ -21,9 +21,7 @@ import 'package:rimba_app/ui/views/moment_add_view.dart';
 import 'package:rimba_app/ui/views/moment_detail_view.dart';
 import 'package:rimba_app/ui/views/found_detail_view.dart';
 import 'package:rimba_app/ui/views/found_list_view.dart';
-
-
-
+import 'package:rimba_app/ui/views/profile_view.dart';
 
 class AppRouter {
   final AuthService authService;
@@ -51,41 +49,43 @@ class AppRouter {
         path: '/home',
         builder: (context, state) => const HomeView(),
       ),
-    // ==== MOMENTS (LIBRARY) ====
-    GoRoute(
-      path: '/moments',
-      builder: (context, state) => const MomentsListView(),
-    ),
-    GoRoute(
-      path: '/moments/add',
-      builder: (context, state) => const MomentAddView(),
-    ),
-    GoRoute(
-      path: '/moments/:id',
-      builder: (context, state) {
-        final id = int.parse(state.pathParameters['id']!);
-        final moment =
-            state.extra is Moment ? state.extra as Moment : null;
-        return MomentDetailView(
-          momentId: id,
-          initialMoment: moment,
-        );
-      },
-    ),
-GoRoute(
-  path: '/found',
-  builder: (context, state) => const FoundListView(),
-),
-GoRoute(
-  path: '/found/:id',
-  builder: (context, state) {
-    final flora = state.extra as FloraTableData;
-    return FoundDetailView(flora: flora);
-  },
-),
+      GoRoute(
+        path: '/profile',
+        builder: (context, state) => const ProfileView(),
+      ),
+      // ==== MOMENTS (LIBRARY) ====
+      GoRoute(
+        path: '/moments',
+        builder: (context, state) => const MomentsListView(),
+      ),
+      GoRoute(
+        path: '/moments/add',
+        builder: (context, state) => const MomentAddView(),
+      ),
+      GoRoute(
+        path: '/moments/:id',
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          final moment = state.extra is Moment ? state.extra as Moment : null;
+          return MomentDetailView(
+            momentId: id,
+            initialMoment: moment,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/found',
+        builder: (context, state) => const FoundListView(),
+      ),
+      GoRoute(
+        path: '/found/:id',
+        builder: (context, state) {
+          final flora = state.extra as FloraTableData;
+          return FoundDetailView(flora: flora);
+        },
+      ),
 
-
-            GoRoute(
+      GoRoute(
         path: '/categories',
         builder: (context, state) => const CategoriesOverviewView(),
       ),
@@ -93,7 +93,8 @@ GoRoute(
         path: '/categories/:id',
         builder: (context, state) {
           final id = int.parse(state.pathParameters['id']!);
-          final category = state.extra is Category ? state.extra as Category : null;
+          final category =
+              state.extra is Category ? state.extra as Category : null;
           return CategoryFloraListView(
             categoryId: id,
             category: category,
@@ -104,8 +105,9 @@ GoRoute(
         path: '/flora/:id',
         builder: (context, state) {
           final id = int.parse(state.pathParameters['id']!);
-          final flora =
-              state.extra is FloraTableData ? state.extra as FloraTableData : null;
+          final flora = state.extra is FloraTableData
+              ? state.extra as FloraTableData
+              : null;
           return FloraDetailView(
             floraId: id,
             initialFlora: flora,
@@ -120,21 +122,25 @@ GoRoute(
       GoRoute(
         path: '/admin/flora',
         builder: (context, state) => ChangeNotifierProvider(
-          create: (_) => FloraViewModel(Provider.of<AppDatabase>(context, listen: false)),
+          create: (_) =>
+              FloraViewModel(Provider.of<AppDatabase>(context, listen: false)),
           child: const FloraManagementView(),
         ),
       ),
       GoRoute(
         path: '/admin/kategori',
         builder: (context, state) => ChangeNotifierProvider(
-          create: (_) => CategoriesViewModel(Provider.of<AppDatabase>(context, listen: false)),
+          create: (_) => CategoriesViewModel(
+              Provider.of<AppDatabase>(context, listen: false)),
           child: const CategoriesManagementView(),
         ),
       ),
       GoRoute(
         path: '/admin/users',
         builder: (context, state) => ChangeNotifierProvider(
-          create: (_) => UsersViewModel(Provider.of<AppDatabase>(context, listen: false))..loadUsers(),
+          create: (_) =>
+              UsersViewModel(Provider.of<AppDatabase>(context, listen: false))
+                ..loadUsers(),
           child: const UsersManagementView(),
         ),
       ),
@@ -153,8 +159,10 @@ GoRoute(
         return '/home';
       }
 
-      if (loggedIn && location == '/admin' && userRole != 'admin') return '/home';
-      if (loggedIn && location == '/home' && userRole == 'admin') return '/admin';
+      if (loggedIn && location == '/admin' && userRole != 'admin')
+        return '/home';
+      if (loggedIn && location == '/home' && userRole == 'admin')
+        return '/admin';
 
       return null;
     },

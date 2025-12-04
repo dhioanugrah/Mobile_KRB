@@ -6,8 +6,6 @@ import 'package:rimba_app/data/app_database.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rimba_app/ui/widgets/app_bottom_navbar.dart';
 
-
-
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -36,26 +34,17 @@ class _HomeViewState extends State<HomeView> {
           ],
         ),
       ),
-  bottomNavigationBar: const AppBottomNavBar(
-    currentTab: AppTab.home,
-  ),
+      bottomNavigationBar: const AppBottomNavBar(
+        currentTab: AppTab.home,
+      ),
     );
   }
 
   AppBar _buildAppBar() {
     return AppBar(
       backgroundColor: Colors.white,
-      elevation: 0,
-      centerTitle: true,
-      foregroundColor: Colors.black87,
-      leading: IconButton(
-        icon: const Icon(Icons.menu_rounded),
-        onPressed: () {
-          // TODO: buka drawer / menu kalau mau
-        },
-      ),
       title: const Text(
-        'Home',
+        'RIMBA',
         style: TextStyle(
           fontWeight: FontWeight.bold,
         ),
@@ -93,7 +82,6 @@ class _HomeViewState extends State<HomeView> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Icon(Icons.search_rounded),
           ],
         ),
         const SizedBox(height: 12),
@@ -210,6 +198,7 @@ class _HomeViewState extends State<HomeView> {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green.shade700,
+              foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -217,8 +206,7 @@ class _HomeViewState extends State<HomeView> {
             onPressed: () {
               context.go('/categories');
             },
-
-            child: const Text('More'),
+            child: const Text('More Categories'),
           ),
         ),
       ],
@@ -340,38 +328,49 @@ class _FloraCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
       ),
       padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(18),
-              child: _buildImage(),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            flora.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 4),
-          GestureDetector(
-            onTap: () {
-              // TODO: buka halaman detail flora
-            },
-            child: const Text(
-              'Detail',
-              style: TextStyle(
-                color: Colors.green,
-                fontWeight: FontWeight.w600,
+      child: GestureDetector(
+        onTap: () {
+          context.go(
+            '/flora/${flora.id}',
+            extra: flora,
+          );
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(18),
+                child: _buildImage(),
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 8),
+            Text(
+              flora.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 4),
+            GestureDetector(
+              onTap: () {
+                context.go(
+                  '/flora/${flora.id}',
+                  extra: flora,
+                );
+              },
+              child: const Text(
+                'Detail',
+                style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

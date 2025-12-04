@@ -24,10 +24,6 @@ class MomentsListView extends StatelessWidget {
             appBar: AppBar(
               backgroundColor: Colors.white,
               elevation: 0,
-              leading: IconButton(
-                icon: const Icon(Icons.menu_rounded),
-                onPressed: () {},
-              ),
               centerTitle: true,
               title: const Text(
                 'MOMEN',
@@ -81,8 +77,7 @@ class MomentsListView extends StatelessWidget {
       itemBuilder: (context, index) {
         final m = vm.moments[index];
         final date = m.createdAt;
-        final tglText =
-            '${date.day.toString().padLeft(2, '0')}-'
+        final tglText = '${date.day.toString().padLeft(2, '0')}-'
             '${date.month.toString().padLeft(2, '0')}-'
             '${date.year}';
 

@@ -31,28 +31,32 @@ class _MomentAddViewState extends State<MomentAddView> {
 
     return ChangeNotifierProvider<MomentsViewModel>(
       create: (_) => MomentsViewModel(db),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          centerTitle: true,
-          title: const Text(
-            'momen langka',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
+      child: Builder(
+        builder: (innerContext) {
+          // innerContext ini SUDAH DI DALAM provider MomentsViewModel
+          return Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              centerTitle: true,
+              title: const Text(
+                'momen langka',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                ),
+              ),
             ),
-          ),
-        ),
-        body: _buildForm(),
-        bottomNavigationBar:
-            const AppBottomNavBar(currentTab: AppTab.add),
+            body: _buildForm(innerContext),
+            bottomNavigationBar: const AppBottomNavBar(currentTab: AppTab.add),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildForm() {
+  Widget _buildForm(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Form(
@@ -76,8 +80,9 @@ class _MomentAddViewState extends State<MomentAddView> {
                 border: UnderlineInputBorder(),
               ),
               maxLines: 5,
-              validator: (v) =>
-                  v == null || v.trim().isEmpty ? 'Deskripsi wajib diisi' : null,
+              validator: (v) => v == null || v.trim().isEmpty
+                  ? 'Deskripsi wajib diisi'
+                  : null,
             ),
             const SizedBox(height: 24),
             SizedBox(

@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:rimba_app/data/app_database.dart';
 import 'package:rimba_app/ui/widgets/app_bottom_navbar.dart';
 
-
 class CategoryFloraListView extends StatelessWidget {
   final int categoryId;
   final Category? category; // dikirim lewat extra (optional)
@@ -27,8 +26,14 @@ class CategoryFloraListView extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.menu_rounded),
-          onPressed: () {},
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/categories');
+            }
+          },
         ),
         centerTitle: true,
         title: const Text(
@@ -88,21 +93,6 @@ class CategoryFloraListView extends StatelessWidget {
                       '${floras.length} plants',
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    TextButton.icon(
-                      onPressed: () {
-                        // TODO: kalau mau bikin filter lanjutan
-                      },
-                      icon: const Icon(Icons.filter_list_rounded, size: 18),
-                      label: const Text('Filter'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.black87,
-                        backgroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 4,
-                        ),
                       ),
                     ),
                   ],
@@ -200,24 +190,33 @@ class _FloraListItem extends StatelessWidget {
           const SizedBox(width: 8),
           SizedBox(
             width: 80,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green.shade700,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-              ),
-              onPressed: () {
+            child: GestureDetector(
+              onTap: () {
                 context.go(
                   '/flora/${flora.id}',
                   extra: flora,
                 );
               },
-              child: const Text(
-                'DETAIL',
-                style: TextStyle(fontSize: 11),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green.shade700,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                ),
+                onPressed: () {
+                  context.go(
+                    '/flora/${flora.id}',
+                    extra: flora,
+                  );
+                },
+                child: const Text(
+                  'DETAIL',
+                  style: TextStyle(fontSize: 11),
+                ),
               ),
             ),
           ),

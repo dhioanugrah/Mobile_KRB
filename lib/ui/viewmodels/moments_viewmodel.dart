@@ -36,16 +36,20 @@ class MomentsViewModel extends ChangeNotifier {
     required String deskripsi,
   }) async {
     try {
+      errorMessage = null;
       final momentCompanion = MomentsCompanion.insert(
         tempat: tempat,
         deskripsi: Value(deskripsi),
-        photoUrl: const Value(null),    // kita abaikan kolom ini
+        // photoUrl DIHAPUS
         updatedAt: const Value(null),
       );
 
       await db.insertMoment(momentCompanion);
       await loadMoments();
-    } catch (e) {
+    } catch (e, st) {
+      // biar kelihatan kalau ada error lagi
+      debugPrint('ERROR INSERT MOMENT: $e');
+      debugPrint('$st');
       errorMessage = e.toString();
       notifyListeners();
     }

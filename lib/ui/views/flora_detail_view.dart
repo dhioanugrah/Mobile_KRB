@@ -1,15 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:rimba_app/data/app_database.dart';
 import 'package:rimba_app/ui/widgets/app_bottom_navbar.dart';
-// Update the import path below if the file exists elsewhere, for example:
 import 'package:rimba_app/ui/viewmodels/found_viewmodel.dart';
-// Or, if the file does not exist, create 'lib/ui/viewmodels/found_view_model.dart' with the required FoundViewModel class.
 
-
-class FloraDetailView extends StatelessWidget {
+class FloraDetailView extends StatefulWidget {
   final int floraId;
   final FloraTableData? initialFlora;
 
@@ -20,20 +18,90 @@ class FloraDetailView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final db = context.read<AppDatabase>();
+  State<FloraDetailView> createState() => _FloraDetailViewState();
+}
 
+class _FloraDetailViewState extends State<FloraDetailView> {
+  late final AppDatabase _db;
+  late final FoundViewModel _foundVm;
+
+  bool _isFound = false;
+  bool _isCheckingFound = true; // untuk disable tombol saat cek awal
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _db = context.read<AppDatabase>();
+    _foundVm = FoundViewModel(_db);
+    _checkInitialFound();
+  }
+
+  Future<void> _checkInitialFound() async {
+    final already = await _foundVm.check(widget.floraId);
+    if (!mounted) return;
+    setState(() {
+      _isFound = already;
+      _isCheckingFound = false;
+    });
+  }
+
+  Future<void> _toggleFound(FloraTableData flora) async {
+    setState(() {
+      _isCheckingFound = true;
+    });
+
+    if (_isFound) {
+      // sudah ditemukan -> hapus dari temuan
+      await _foundVm.remove(flora.id);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Dihapus dari Temuan')),
+      );
+    } else {
+      // belum ditemukan -> tambah ke temuan
+      await _foundVm.add(flora.id);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ditambahkan ke Temuan!')),
+      );
+      // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+      // Tambahkan baris ini supaya otomatis pindah halaman
+      GoRouter.of(context).go('/found');
+      return; // hentikan fungsi supaya tidak berubah state dua kali
+      // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+      // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _isFound = !_isFound;
+      _isCheckingFound = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/home');
+            }
+          },
+        ),
         foregroundColor: Colors.black87,
       ),
       body: FutureBuilder<FloraTableData?>(
-        future: initialFlora != null
-            ? Future.value(initialFlora)
-            : db.getFloraById(floraId),
+        future: widget.initialFlora != null
+            ? Future.value(widget.initialFlora)
+            : _db.getFloraById(widget.floraId),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -43,7 +111,6 @@ class FloraDetailView extends StatelessWidget {
           }
 
           final flora = snapshot.data!;
-
           final description = (flora.description ?? '').trim();
           final text = description.isEmpty
               ? 'Belum ada deskripsi untuk flora ini.'
@@ -85,8 +152,13 @@ class FloraDetailView extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
+                      onPressed:
+                          _isCheckingFound ? null : () => _toggleFound(flora),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green.shade700,
+                        backgroundColor: _isFound
+                            ? Colors.red.shade700
+                            : Colors.green.shade700,
+                        foregroundColor: _isFound ? Colors.white : Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -94,21 +166,14 @@ class FloraDetailView extends StatelessWidget {
                           vertical: 12,
                         ),
                       ),
-onPressed: () async {
-  final vm = FoundViewModel(context.read<AppDatabase>());
-  final already = await vm.check(flora.id);
-
-  if (!already) {
-    await vm.add(flora.id);
-  }
-
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Ditambahkan ke Temuan!')),
-  );
-},
-
-                      icon: const Icon(Icons.bookmark_border_rounded),
-                      label: const Text('Ditemukan'),
+                      icon: Icon(
+                        _isFound
+                            ? Icons.bookmark_remove_rounded
+                            : Icons.bookmark_add_outlined,
+                      ),
+                      label: Text(
+                        _isFound ? 'Hapus dari Temuan' : 'Tambah ke Temuan',
+                      ),
                     ),
                   ),
                 ],
@@ -117,8 +182,8 @@ onPressed: () async {
           );
         },
       ),
-      bottomNavigationBar: AppBottomNavBar(
-        currentTab: AppTab.values.first,
+      bottomNavigationBar: const AppBottomNavBar(
+        currentTab: AppTab.home,
       ),
     );
   }

@@ -24,6 +24,16 @@ class MomentDetailView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/moments');
+            }
+          },
+        ),
         foregroundColor: Colors.black87,
       ),
       body: FutureBuilder<Moment?>(
@@ -40,8 +50,7 @@ class MomentDetailView extends StatelessWidget {
 
           final m = snapshot.data!;
           final date = m.createdAt;
-          final tglText =
-              '${date.day.toString().padLeft(2, '0')}-'
+          final tglText = '${date.day.toString().padLeft(2, '0')}-'
               '${date.month.toString().padLeft(2, '0')}-'
               '${date.year}';
 

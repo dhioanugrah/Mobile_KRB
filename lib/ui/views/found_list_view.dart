@@ -21,10 +21,6 @@ class FoundListView extends StatelessWidget {
             appBar: AppBar(
               elevation: 0,
               backgroundColor: Colors.white,
-              leading: IconButton(
-                icon: const Icon(Icons.menu_rounded),
-                onPressed: () {},
-              ),
               centerTitle: true,
               title: const Text(
                 "Temuan",

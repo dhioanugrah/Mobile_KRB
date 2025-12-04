@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 
 enum AppTab { home, found, add, library, profile }
 
-
 class AppBottomNavBar extends StatelessWidget {
   final AppTab currentTab;
 
@@ -12,27 +11,26 @@ class AppBottomNavBar extends StatelessWidget {
     required this.currentTab,
   });
 
-    void _onTap(BuildContext context, AppTab tab) {
-      switch (tab) {
-        case AppTab.home:
-          context.go('/home');
-          break;
-        case AppTab.found:
-          context.go('/found');      // halaman flora ditemukan (nanti kita buat)
-          break;
-        case AppTab.add:
-          // buka form tambah moment / note
-          context.go('/moments/add'); // route form add, nanti kita buat
-          break;
-        case AppTab.library:
-          context.go('/moments');    // list semua note/moment
-          break;
-        case AppTab.profile:
-          // nanti ke /profile kalau sudah ada
-          break;
-      }
+  void _onTap(BuildContext context, AppTab tab) {
+    switch (tab) {
+      case AppTab.home:
+        context.go('/home');
+        break;
+      case AppTab.found:
+        context.go('/found'); // halaman flora ditemukan (nanti kita buat)
+        break;
+      case AppTab.add:
+        // buka form tambah moment / note
+        context.go('/moments/add'); // route form add, nanti kita buat
+        break;
+      case AppTab.library:
+        context.go('/moments'); // list semua note/moment
+        break;
+      case AppTab.profile:
+        context.go('/profile');
+        break;
     }
-
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +58,8 @@ class AppBottomNavBar extends StatelessWidget {
               onTap: () => _onTap(context, AppTab.home),
             ),
             _NavIcon(
-              icon: Icons.map_outlined,          // nanti bisa kamu ganti icon lain kalau mau
+              icon: Icons
+                  .map_outlined, // nanti bisa kamu ganti icon lain kalau mau
               isActive: currentTab == AppTab.found,
               onTap: () => _onTap(context, AppTab.found),
             ),
@@ -79,7 +78,6 @@ class AppBottomNavBar extends StatelessWidget {
               isActive: currentTab == AppTab.profile,
               onTap: () => _onTap(context, AppTab.profile),
             ),
-
           ],
         ),
       ),

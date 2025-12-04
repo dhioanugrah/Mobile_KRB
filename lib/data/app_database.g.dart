@@ -850,12 +850,6 @@ class $MomentsTable extends Moments with TableInfo<$MomentsTable, Moment> {
   late final GeneratedColumn<String> deskripsi = GeneratedColumn<String>(
       'deskripsi', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _photoUrlMeta =
-      const VerificationMeta('photoUrl');
-  @override
-  late final GeneratedColumn<String> photoUrl = GeneratedColumn<String>(
-      'photo_url', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -872,7 +866,7 @@ class $MomentsTable extends Moments with TableInfo<$MomentsTable, Moment> {
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, tempat, deskripsi, photoUrl, createdAt, updatedAt];
+      [id, tempat, deskripsi, createdAt, updatedAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -895,10 +889,6 @@ class $MomentsTable extends Moments with TableInfo<$MomentsTable, Moment> {
     if (data.containsKey('deskripsi')) {
       context.handle(_deskripsiMeta,
           deskripsi.isAcceptableOrUnknown(data['deskripsi']!, _deskripsiMeta));
-    }
-    if (data.containsKey('photo_url')) {
-      context.handle(_photoUrlMeta,
-          photoUrl.isAcceptableOrUnknown(data['photo_url']!, _photoUrlMeta));
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -923,8 +913,6 @@ class $MomentsTable extends Moments with TableInfo<$MomentsTable, Moment> {
           .read(DriftSqlType.string, data['${effectivePrefix}tempat'])!,
       deskripsi: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}deskripsi']),
-      photoUrl: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}photo_url']),
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       updatedAt: attachedDatabase.typeMapping
@@ -942,14 +930,12 @@ class Moment extends DataClass implements Insertable<Moment> {
   final int id;
   final String tempat;
   final String? deskripsi;
-  final String? photoUrl;
   final DateTime createdAt;
   final DateTime? updatedAt;
   const Moment(
       {required this.id,
       required this.tempat,
       this.deskripsi,
-      this.photoUrl,
       required this.createdAt,
       this.updatedAt});
   @override
@@ -959,9 +945,6 @@ class Moment extends DataClass implements Insertable<Moment> {
     map['tempat'] = Variable<String>(tempat);
     if (!nullToAbsent || deskripsi != null) {
       map['deskripsi'] = Variable<String>(deskripsi);
-    }
-    if (!nullToAbsent || photoUrl != null) {
-      map['photo_url'] = Variable<String>(photoUrl);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
     if (!nullToAbsent || updatedAt != null) {
@@ -977,9 +960,6 @@ class Moment extends DataClass implements Insertable<Moment> {
       deskripsi: deskripsi == null && nullToAbsent
           ? const Value.absent()
           : Value(deskripsi),
-      photoUrl: photoUrl == null && nullToAbsent
-          ? const Value.absent()
-          : Value(photoUrl),
       createdAt: Value(createdAt),
       updatedAt: updatedAt == null && nullToAbsent
           ? const Value.absent()
@@ -994,7 +974,6 @@ class Moment extends DataClass implements Insertable<Moment> {
       id: serializer.fromJson<int>(json['id']),
       tempat: serializer.fromJson<String>(json['tempat']),
       deskripsi: serializer.fromJson<String?>(json['deskripsi']),
-      photoUrl: serializer.fromJson<String?>(json['photoUrl']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
     );
@@ -1006,7 +985,6 @@ class Moment extends DataClass implements Insertable<Moment> {
       'id': serializer.toJson<int>(id),
       'tempat': serializer.toJson<String>(tempat),
       'deskripsi': serializer.toJson<String?>(deskripsi),
-      'photoUrl': serializer.toJson<String?>(photoUrl),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
     };
@@ -1016,14 +994,12 @@ class Moment extends DataClass implements Insertable<Moment> {
           {int? id,
           String? tempat,
           Value<String?> deskripsi = const Value.absent(),
-          Value<String?> photoUrl = const Value.absent(),
           DateTime? createdAt,
           Value<DateTime?> updatedAt = const Value.absent()}) =>
       Moment(
         id: id ?? this.id,
         tempat: tempat ?? this.tempat,
         deskripsi: deskripsi.present ? deskripsi.value : this.deskripsi,
-        photoUrl: photoUrl.present ? photoUrl.value : this.photoUrl,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
       );
@@ -1032,7 +1008,6 @@ class Moment extends DataClass implements Insertable<Moment> {
       id: data.id.present ? data.id.value : this.id,
       tempat: data.tempat.present ? data.tempat.value : this.tempat,
       deskripsi: data.deskripsi.present ? data.deskripsi.value : this.deskripsi,
-      photoUrl: data.photoUrl.present ? data.photoUrl.value : this.photoUrl,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -1044,7 +1019,6 @@ class Moment extends DataClass implements Insertable<Moment> {
           ..write('id: $id, ')
           ..write('tempat: $tempat, ')
           ..write('deskripsi: $deskripsi, ')
-          ..write('photoUrl: $photoUrl, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1052,8 +1026,7 @@ class Moment extends DataClass implements Insertable<Moment> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, tempat, deskripsi, photoUrl, createdAt, updatedAt);
+  int get hashCode => Object.hash(id, tempat, deskripsi, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1061,7 +1034,6 @@ class Moment extends DataClass implements Insertable<Moment> {
           other.id == this.id &&
           other.tempat == this.tempat &&
           other.deskripsi == this.deskripsi &&
-          other.photoUrl == this.photoUrl &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -1070,14 +1042,12 @@ class MomentsCompanion extends UpdateCompanion<Moment> {
   final Value<int> id;
   final Value<String> tempat;
   final Value<String?> deskripsi;
-  final Value<String?> photoUrl;
   final Value<DateTime> createdAt;
   final Value<DateTime?> updatedAt;
   const MomentsCompanion({
     this.id = const Value.absent(),
     this.tempat = const Value.absent(),
     this.deskripsi = const Value.absent(),
-    this.photoUrl = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
@@ -1085,7 +1055,6 @@ class MomentsCompanion extends UpdateCompanion<Moment> {
     this.id = const Value.absent(),
     required String tempat,
     this.deskripsi = const Value.absent(),
-    this.photoUrl = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   }) : tempat = Value(tempat);
@@ -1093,7 +1062,6 @@ class MomentsCompanion extends UpdateCompanion<Moment> {
     Expression<int>? id,
     Expression<String>? tempat,
     Expression<String>? deskripsi,
-    Expression<String>? photoUrl,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
   }) {
@@ -1101,7 +1069,6 @@ class MomentsCompanion extends UpdateCompanion<Moment> {
       if (id != null) 'id': id,
       if (tempat != null) 'tempat': tempat,
       if (deskripsi != null) 'deskripsi': deskripsi,
-      if (photoUrl != null) 'photo_url': photoUrl,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
@@ -1111,14 +1078,12 @@ class MomentsCompanion extends UpdateCompanion<Moment> {
       {Value<int>? id,
       Value<String>? tempat,
       Value<String?>? deskripsi,
-      Value<String?>? photoUrl,
       Value<DateTime>? createdAt,
       Value<DateTime?>? updatedAt}) {
     return MomentsCompanion(
       id: id ?? this.id,
       tempat: tempat ?? this.tempat,
       deskripsi: deskripsi ?? this.deskripsi,
-      photoUrl: photoUrl ?? this.photoUrl,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -1136,9 +1101,6 @@ class MomentsCompanion extends UpdateCompanion<Moment> {
     if (deskripsi.present) {
       map['deskripsi'] = Variable<String>(deskripsi.value);
     }
-    if (photoUrl.present) {
-      map['photo_url'] = Variable<String>(photoUrl.value);
-    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1154,7 +1116,6 @@ class MomentsCompanion extends UpdateCompanion<Moment> {
           ..write('id: $id, ')
           ..write('tempat: $tempat, ')
           ..write('deskripsi: $deskripsi, ')
-          ..write('photoUrl: $photoUrl, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -2115,7 +2076,6 @@ typedef $$MomentsTableCreateCompanionBuilder = MomentsCompanion Function({
   Value<int> id,
   required String tempat,
   Value<String?> deskripsi,
-  Value<String?> photoUrl,
   Value<DateTime> createdAt,
   Value<DateTime?> updatedAt,
 });
@@ -2123,7 +2083,6 @@ typedef $$MomentsTableUpdateCompanionBuilder = MomentsCompanion Function({
   Value<int> id,
   Value<String> tempat,
   Value<String?> deskripsi,
-  Value<String?> photoUrl,
   Value<DateTime> createdAt,
   Value<DateTime?> updatedAt,
 });
@@ -2145,9 +2104,6 @@ class $$MomentsTableFilterComposer
 
   ColumnFilters<String> get deskripsi => $composableBuilder(
       column: $table.deskripsi, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get photoUrl => $composableBuilder(
-      column: $table.photoUrl, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -2174,9 +2130,6 @@ class $$MomentsTableOrderingComposer
   ColumnOrderings<String> get deskripsi => $composableBuilder(
       column: $table.deskripsi, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get photoUrl => $composableBuilder(
-      column: $table.photoUrl, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
@@ -2201,9 +2154,6 @@ class $$MomentsTableAnnotationComposer
 
   GeneratedColumn<String> get deskripsi =>
       $composableBuilder(column: $table.deskripsi, builder: (column) => column);
-
-  GeneratedColumn<String> get photoUrl =>
-      $composableBuilder(column: $table.photoUrl, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -2238,7 +2188,6 @@ class $$MomentsTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<String> tempat = const Value.absent(),
             Value<String?> deskripsi = const Value.absent(),
-            Value<String?> photoUrl = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime?> updatedAt = const Value.absent(),
           }) =>
@@ -2246,7 +2195,6 @@ class $$MomentsTableTableManager extends RootTableManager<
             id: id,
             tempat: tempat,
             deskripsi: deskripsi,
-            photoUrl: photoUrl,
             createdAt: createdAt,
             updatedAt: updatedAt,
           ),
@@ -2254,7 +2202,6 @@ class $$MomentsTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             required String tempat,
             Value<String?> deskripsi = const Value.absent(),
-            Value<String?> photoUrl = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime?> updatedAt = const Value.absent(),
           }) =>
@@ -2262,7 +2209,6 @@ class $$MomentsTableTableManager extends RootTableManager<
             id: id,
             tempat: tempat,
             deskripsi: deskripsi,
-            photoUrl: photoUrl,
             createdAt: createdAt,
             updatedAt: updatedAt,
           ),
