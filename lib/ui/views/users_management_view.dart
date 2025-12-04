@@ -105,8 +105,8 @@ class UsersManagementView extends StatelessWidget {
                                 ],
                               ),
                               trailing: PopupMenuButton<_UserAction>(
-                                onSelected: (action) =>
-                                    _handleUserAction(context, vm, action, user),
+                                onSelected: (action) => _handleUserAction(
+                                    context, vm, action, user),
                                 itemBuilder: (context) {
                                   final items = <PopupMenuEntry<_UserAction>>[];
                                   if (user.role != 'admin') {
@@ -289,7 +289,8 @@ class UsersManagementView extends StatelessWidget {
     );
   }
 
-  Future<void> _showCreateUserDialog(BuildContext context, UsersViewModel vm) async {
+  Future<void> _showCreateUserDialog(
+      BuildContext context, UsersViewModel vm) async {
     final formKey = GlobalKey<FormState>();
     final usernameCtrl = TextEditingController();
     final emailCtrl = TextEditingController();
@@ -345,7 +346,7 @@ class UsersManagementView extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
-                  initialValue: role,
+                  value: role,
                   decoration: const InputDecoration(labelText: 'Peran'),
                   items: const [
                     DropdownMenuItem(value: 'user', child: Text('User')),
